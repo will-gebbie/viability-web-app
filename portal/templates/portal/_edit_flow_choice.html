@@ -1,0 +1,35 @@
+<button type="button"
+        class="btn-soft"
+        hx-get="{% url 'portal:edit-choice' run.slug %}"
+        hx-target="#edit-body"
+        hx-swap="innerHTML"
+        style="align-self:flex-start;margin-bottom:16px;padding:7px 12px;font-size:12.5px;font-family:Geist;color:var(--text-2);background:var(--panel-2);border:1px solid var(--border);border-radius:8px;cursor:pointer">← Choose another method</button>
+<div style="max-width:720px;display:flex;flex-direction:column;gap:14px">
+    <div>
+        <h2 style="margin:0 0 4px;font-size:15px;font-weight:600">Flow cytometry measurements</h2>
+        <p style="margin:0;font-size:12.5px;color:var(--text-2)">Replace an existing measurement by re-uploading, or add a new one.</p>
+    </div>
+    {% for r in results %}
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:14px;background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:14px 16px">
+            <div style="min-width:0">
+                <div style="font-size:13.5px;font-weight:600;color:var(--text)">{{ r.flow_date|default:r.created|date:"M j, Y" }}</div>
+                <div style="font-size:12px;color:var(--text-2)">{{ r.cells_per_uL|floatformat:0 }} cells/µL · OD {{ r.od }}{% if r.fcs_name %} · {{ r.fcs_name|truncatechars:40 }}{% endif %}</div>
+            </div>
+            <form method="post"
+                  action="{% url 'portal:delete-flow' run.slug %}?delete={{ r.id }}"
+                  onsubmit="return confirm('Delete this flow cytometry data permanently?')"
+                  style="margin:0">
+                {% csrf_token %}
+                <button type="submit"
+                        class="btn-danger"
+                        style="display:flex;align-items:center;gap:6px;padding:8px 13px;font-size:12.5px;font-weight:500;font-family:Geist;color:var(--bad);background:transparent;border:1px solid var(--border);border-radius:8px;cursor:pointer;transition:border-color .15s,background .15s">🗑 Delete</button>
+            </form>
+            <a href="{% url 'portal:upload-flow' run.slug %}?replace={{ r.id }}"
+               class="btn-soft"
+               style="flex:none;padding:8px 14px;font-size:12.5px;color:var(--text);background:var(--panel-2);border:1px solid var(--border);border-radius:8px">Replace</a>
+        </div>
+    {% endfor %}
+    <a href="{% url 'portal:upload-flow' run.slug %}"
+       class="btn-accent"
+       style="align-self:flex-start;padding:10px 18px;font-size:13.5px;font-weight:600;font-family:Geist;color:#fff;background:var(--accent);border:none;border-radius:9px">＋ Upload new measurement</a>
+</div>

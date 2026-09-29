@@ -1,0 +1,67 @@
+<div style="height:150px;
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            justify-content:center;
+            gap:10px;
+            color:var(--text-3)">
+    <span style="font-size:12.5px">No data uploaded yet</span>
+    {% if upload_url %}
+        <form method="post"
+              action="{{ upload_url }}"
+              enctype="multipart/form-data"
+              style="margin:0">
+            {% csrf_token %}
+            <label class="btn-soft"
+                   style="display:flex;
+                          align-items:center;
+                          gap:6px;
+                          padding:7px 12px;
+                          font-size:12px;
+                          font-weight:500;
+                          font-family:Geist;
+                          color:var(--text);
+                          background:var(--panel);
+                          border:1px solid var(--border);
+                          border-radius:8px;
+                          cursor:pointer">
+                ⬆ Upload CSV
+                <input type="file"
+                       name="csv"
+                       accept=".csv"
+                       hidden
+                       onchange="this.form.submit()">
+            </label>
+        </form>
+    {% elif page_url %}
+        <a href="{{ page_url }}"
+           class="btn-soft"
+           style="display:flex;
+                  align-items:center;
+                  gap:6px;
+                  padding:7px 12px;
+                  font-size:12px;
+                  font-weight:500;
+                  font-family:Geist;
+                  color:var(--text);
+                  background:var(--panel);
+                  border:1px solid var(--border);
+                  border-radius:8px;
+                  cursor:pointer">⬆ Upload data</a>
+    {% else %}
+        <button type="button"
+                class="btn-soft"
+                style="display:flex;
+                       align-items:center;
+                       gap:6px;
+                       padding:7px 12px;
+                       font-size:12px;
+                       font-weight:500;
+                       font-family:Geist;
+                       color:var(--text);
+                       background:var(--panel);
+                       border:1px solid var(--border);
+                       border-radius:8px;
+                       cursor:pointer">⬆ Upload data</button>
+    {% endif %}
+</div>

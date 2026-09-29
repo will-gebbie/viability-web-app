@@ -1,0 +1,79 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>{% block title %}LabPortal{% endblock %}</title>
+        <!-- Set theme before paint to avoid flash -->
+        <script>document.documentElement.dataset.theme = localStorage.getItem('theme') || 'dark';</script>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap"
+              rel="stylesheet">
+        <!-- Vendored, not CDN'd: a third-party script tag on an authenticated page
+             is a supply-chain hole, and these are 4 files that never change. Bump
+             by re-downloading the pinned version into static/portal/vendor/. -->
+        <script src="{% static 'portal/vendor/htmx.min.js' %}"></script><!-- 2.0.4 -->
+        <script defer src="{% static 'portal/vendor/alpine.min.js' %}"></script><!-- 3.14.8 -->
+        <style>
+  *{box-sizing:border-box}
+  body{margin:0;font-family:Geist,system-ui,sans-serif}
+  a{color:var(--accent);text-decoration:none}
+  a:hover{color:var(--accent-2)}
+  :root{
+    --canvas-bg:#08080a;--panel:#141417;--panel-2:#1a1a1e;--elev:#202024;
+    --border:rgba(255,255,255,.09);--border-strong:rgba(255,255,255,.15);
+    --text:#f4f4f5;--text-2:#a1a1aa;--text-3:#71717a;
+    --accent:#ea580c;--accent-2:#fb923c;--accent-soft:rgba(234,88,12,.16);
+    --ok:#10b981;--warn:#f59e0b;--bad:#ef4444;
+    --shadow:0 1px 2px rgba(0,0,0,.45),0 10px 30px rgba(0,0,0,.35);
+    --shadow-lift:0 14px 40px rgba(0,0,0,.5);
+  }
+  [data-theme="light"]{
+    --canvas-bg:#ececed;--panel:#ffffff;--panel-2:#fafafa;--elev:#ffffff;
+    --border:rgba(0,0,0,.09);--border-strong:rgba(0,0,0,.16);
+    --text:#18181b;--text-2:#52525b;--text-3:#8a8a93;
+    --accent:#ea580c;--accent-2:#c2410c;--accent-soft:rgba(234,88,12,.10);
+    --shadow:0 1px 2px rgba(0,0,0,.05),0 8px 24px rgba(0,0,0,.08);
+    --shadow-lift:0 16px 40px rgba(0,0,0,.14);
+  }
+  .mono{font-family:'Geist Mono',ui-monospace,Menlo,monospace}
+  /* real hover/active states (the design mocked these with style-hover attrs) */
+  .btn-accent{transition:filter .15s,transform .12s}
+  .btn-accent:hover{filter:brightness(1.08)}
+  .btn-accent:active{transform:translateY(1px)}
+  .btn-soft{transition:border-color .15s}
+  .btn-soft:hover{border-color:var(--border-strong)}
+  .btn-danger:hover{border-color:var(--bad);background:rgba(239,68,68,.08)}
+  .card{transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease}
+  .card:hover{transform:translateY(-4px);border-color:var(--accent);box-shadow:var(--shadow-lift)}
+  .card:active{transform:translateY(-1px) scale(.993)}
+  .link-tile:hover{border-color:var(--accent)}
+  .errorlist{list-style:none;margin:0;padding:0;color:var(--bad);font-size:12px}
+        </style>
+        {% block head %}{% endblock %}
+    </head>
+    <body>
+        <div style="min-height:100vh;
+                    background:var(--canvas-bg);
+                    color:var(--text)">
+            {% block content %}{% endblock %}
+        </div>
+        <script>
+  // Theme toggle: flip data-theme, persist, and let charts re-render.
+  function toggleTheme(){
+    const cur = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+    document.documentElement.dataset.theme = cur;
+    localStorage.setItem('theme', cur);
+    document.querySelectorAll('[data-theme-icon]').forEach(el => el.textContent = cur === 'dark' ? '☾' : '☀');
+    window.dispatchEvent(new CustomEvent('theme-changed', {detail: cur}));
+  }
+  document.addEventListener('DOMContentLoaded', () => {
+    const cur = document.documentElement.dataset.theme;
+    document.querySelectorAll('[data-theme-icon]').forEach(el => el.textContent = cur === 'dark' ? '☾' : '☀');
+  });
+        </script>
+        {% block scripts %}{% endblock %}
+    </body>
+</html>

@@ -1,0 +1,131 @@
+{% extends "portal/base.html" %}
+{% block title %}Runs · LabPortal{% endblock %}
+{% block content %}
+    <style>
+        .filter-btn {
+            cursor: pointer;
+            padding: 6px 12px;
+            font-size: 12.5px;
+            border-radius: 8px;
+            background: var(--panel-2);
+            border: 1px solid var(--border);
+            color: var(--text-2);
+        }
+        .filter-btn.active {
+            font-weight: 500;
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #fff;
+        }
+    </style>
+    <script>
+        function setFilter(el) {
+            document.querySelectorAll(".filter-btn").forEach(function (b) {
+                b.classList.remove("active");
+            });
+            el.classList.add("active");
+        }
+    </script>
+    <div style="display:flex;flex-direction:column;min-height:100vh">
+        <!-- topbar -->
+        <div style="flex:none;
+                    height:56px;
+                    display:flex;
+                    align-items:center;
+                    justify-content:space-between;
+                    padding:0 22px;
+                    border-bottom:1px solid var(--border);
+                    background:var(--panel)">
+            <div style="display:flex;align-items:center;gap:11px">
+                <div style="width:28px;
+                            height:28px;
+                            border-radius:7px;
+                            background:var(--accent);
+                            display:grid;
+                            place-items:center;
+                            color:#fff;
+                            font-weight:700;
+                            font-size:13px">LP</div>
+                <span style="font-weight:600;font-size:14.5px">LabPortal</span>
+                <span style="color:var(--text-3);margin:0 2px">/</span>
+                <span style="color:var(--text-2);font-size:13.5px">Bioreactor Runs</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px">
+                <div style="display:flex;
+                            align-items:center;
+                            gap:8px;
+                            padding:7px 11px;
+                            width:220px;
+                            background:var(--panel-2);
+                            border:1px solid var(--border);
+                            border-radius:8px;
+                            color:var(--text-3);
+                            font-size:12.5px">🔍<span>Search 🚧</span></div>
+                {% if perms.portal.delete_run %}
+                    <a href="{% url 'portal:trash' %}"
+                       class="btn-soft"
+                       style="display:grid;
+                              place-items:center;
+                              width:34px;
+                              height:34px;
+                              border-radius:8px;
+                              background:var(--panel-2);
+                              border:1px solid var(--border);
+                              color:var(--text-2);
+                              font-size:14px"
+                       title="Trash">🗑</a>
+                {% endif %}
+                {% include "portal/_topbar_right.html" %}
+            </div>
+        </div>
+        <!-- body -->
+        <div style="flex:1;
+                    padding:26px 30px;
+                    display:flex;
+                    flex-direction:column;
+                    gap:20px;
+                    max-width:1280px;
+                    width:100%;
+                    margin:0 auto">
+            <div style="display:flex;
+                        align-items:flex-end;
+                        justify-content:space-between">
+                <div>
+                    <h1 style="margin:0 0 5px;
+                               font-size:24px;
+                               font-weight:600;
+                               letter-spacing:-.02em">Bioreactor Runs</h1>
+                    <p style="margin:0;font-size:13px;color:var(--text-2)">{{ runs|length }} runs · {{ running }} currently running</p>
+                </div>
+                {% if perms.portal.add_run %}
+                    <a href="{% url 'portal:import-run' %}"
+                       class="btn-accent"
+                       style="display:flex;
+                              align-items:center;
+                              gap:8px;
+                              padding:10px 16px;
+                              font-size:13.5px;
+                              font-weight:600;
+                              font-family:Geist;
+                              color:#fff;
+                              background:var(--accent);
+                              border:none;
+                              border-radius:9px;
+                              cursor:pointer;
+                              box-shadow:0 6px 18px var(--accent-soft)"><span style="font-size:16px;line-height:0">＋</span> Import New Run</a>
+                {% endif %}
+            </div>
+            <div style="display:flex;gap:8px">
+                {% for f in filters %}
+                    <span hx-get="{% url 'portal:runs' %}?filter={{ f }}"
+                          hx-target="#run-grid"
+                          hx-swap="outerHTML"
+                          hx-push-url="true"
+                          onclick="setFilter(this)"
+                          class="filter-btn{% if f == active %} active{% endif %}">{{ f|title }}</span>
+                {% endfor %}
+            </div>
+            {% include "portal/_run_grid.html" %}
+        </div>
+    </div>
+{% endblock %}

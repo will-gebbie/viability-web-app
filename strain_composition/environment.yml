@@ -1,0 +1,9 @@
+name: strain_comp
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - flask
+  - gunicorn
+  - pandas
+  - minimap2

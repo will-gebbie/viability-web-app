@@ -1,0 +1,66 @@
+{% extends "portal/base.html" %}
+{% block title %}Edit · {{ run.name }}{% endblock %}
+{% block content %}
+    <div style="display:flex;flex-direction:column;min-height:100vh">
+        <!-- topbar -->
+        <div style="flex:none;
+                    height:56px;
+                    display:flex;
+                    align-items:center;
+                    justify-content:space-between;
+                    padding:0 22px;
+                    border-bottom:1px solid var(--border);
+                    background:var(--panel)">
+            <div style="display:flex;align-items:center;gap:9px;font-size:13.5px">
+                <div style="width:28px;
+                            height:28px;
+                            border-radius:7px;
+                            background:var(--accent);
+                            display:grid;
+                            place-items:center;
+                            color:#fff;
+                            font-weight:700;
+                            font-size:13px">LP</div>
+                <a href="{% url 'portal:runs' %}" style="color:var(--text-2)">Runs</a><span style="color:var(--text-3)">/</span>
+                <a href="{% url 'portal:overview' run.slug %}"
+                   class="mono"
+                   style="color:var(--text-2)">{{ run.name }}</a><span style="color:var(--text-3)">/</span>
+                <span style="color:var(--text)">Edit</span>
+            </div>
+            <button onclick="toggleTheme()"
+                    class="btn-soft"
+                    style="width:34px;
+                           height:34px;
+                           border-radius:8px;
+                           background:var(--panel-2);
+                           border:1px solid var(--border);
+                           color:var(--text-2);
+                           cursor:pointer;
+                           font-size:14px"><span data-theme-icon>☾</span></button>
+        </div>
+        <!-- body -->
+        <div style="flex:1;
+                    padding:26px 30px;
+                    max-width:1040px;
+                    width:100%;
+                    margin:0 auto">
+            <h1 style="margin:0 0 5px;
+                       font-size:24px;
+                       font-weight:600;
+                       letter-spacing:-.02em">Edit Run</h1>
+            <p style="margin:0 0 22px;font-size:13px;color:var(--text-2)">Choose what you'd like to edit.</p>
+            <div id="edit-body">{% include "portal/_edit_choice.html" %}</div>
+            <div style="margin-top:18px">
+                <a href="{% url 'portal:overview' run.slug %}"
+                   class="btn-soft"
+                   style="display:inline-block;
+                          padding:10px 18px;
+                          font-size:13.5px;
+                          color:var(--text-2);
+                          background:var(--panel-2);
+                          border:1px solid var(--border);
+                          border-radius:9px">Cancel</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

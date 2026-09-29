@@ -1,0 +1,27 @@
+# /etc/systemd/system/web-app.service
+# Bare-metal portal for the 1 GB prod host. Docker is used only for local dev.
+# gunicorn binds 127.0.0.1 on purpose — cloudflared connects locally, so there
+# is never a public listener to close.
+[Unit]
+Description=LabPortal Web App (gunicorn)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=webapp
+Group=webapp
+WorkingDirectory=/srv/web-app
+EnvironmentFile=/srv/web-app/.env
+ExecStartPre=/srv/web-app/.venv/bin/python manage.py migrate
+ExecStartPre=/srv/web-app/.venv/bin/python manage.py collectstatic --noinput
+ExecStart=/bin/sh -c '/srv/web-app/.venv/bin/gunicorn config.wsgi \
+    -b 127.0.0.1:8000 \
+    --workers ${GUNICORN_WORKERS:-2} \
+    --threads 4 \
+    --timeout ${WEB_SERVER_TIMEOUT:-660}'
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

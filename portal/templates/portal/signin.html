@@ -1,0 +1,51 @@
+{% extends "portal/_auth_shell.html" %}
+{% block title %}Sign in · LabPortal{% endblock %}
+{% block auth_title %}Sign in{% endblock %}
+{% block auth_sub %}Use your lab account to continue.{% endblock %}
+{% block auth_body %}
+    <form method="post" style="display:flex;flex-direction:column;gap:22px">
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ next }}">
+        {% if form.non_field_errors %}
+            <p style="margin:0;
+                      padding:10px 12px;
+                      font-size:12.5px;
+                      color:#fff;
+                      background:#c0392b;
+                      border-radius:8px">{{ form.non_field_errors|striptags }}</p>
+        {% endif %}
+        <div style="display:flex;flex-direction:column;gap:14px">
+            <label>
+                Email
+                <input name="username"
+                       type="email"
+                       required
+                       value="{{ request.POST.username }}">
+            </label>
+            <label>
+                Password
+                <input name="password" type="password" required>
+            </label>
+        </div>
+        <div style="display:flex;
+                    align-items:center;
+                    justify-content:space-between;
+                    font-size:12.5px;
+                    color:var(--text-2)">
+            <a href="{% url 'password_reset' %}">Forgot password?</a>
+        </div>
+        <button type="submit" class="btn-accent auth-btn">Sign in</button>
+    </form>
+    <div>
+        <p style="margin:0 0 6px;
+                  font-size:11.5px;
+                  color:var(--text-3);
+                  text-align:center">
+            Roles: <span style="color:var(--text-2)">Admin</span> · <span style="color:var(--text-2)">Scientist</span> · <span style="color:var(--text-2)">Viewer</span>
+        </p>
+        <p style="margin:0;
+                  font-size:12.5px;
+                  color:var(--text-2);
+                  text-align:center">Accounts are invite only — ask a lab admin.</p>
+    </div>
+{% endblock %}

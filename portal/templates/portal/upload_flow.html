@@ -1,0 +1,61 @@
+{% extends "portal/base.html" %}
+{% block title %}Upload Flow Cytometry · {{ run.name }}{% endblock %}
+{% block content %}
+    <div style="display:flex;flex-direction:column;min-height:100vh">
+        <!-- topbar -->
+        <div style="flex:none;
+                    height:56px;
+                    display:flex;
+                    align-items:center;
+                    justify-content:space-between;
+                    padding:0 22px;
+                    border-bottom:1px solid var(--border);
+                    background:var(--panel)">
+            <div style="display:flex;align-items:center;gap:9px;font-size:13.5px">
+                <div style="width:28px;
+                            height:28px;
+                            border-radius:7px;
+                            background:var(--accent);
+                            display:grid;
+                            place-items:center;
+                            color:#fff;
+                            font-weight:700;
+                            font-size:13px">LP</div>
+                <a href="{% url 'portal:runs' %}" style="color:var(--text-2)">Runs</a><span style="color:var(--text-3)">/</span>
+                <a href="{% url 'portal:overview' run.slug %}"
+                   class="mono"
+                   style="color:var(--text-2)">{{ run.name }}</a><span style="color:var(--text-3)">/</span>
+                <span style="color:var(--text)">Flow cytometry</span>
+            </div>
+            <button onclick="toggleTheme()"
+                    class="btn-soft"
+                    style="width:34px;
+                           height:34px;
+                           border-radius:8px;
+                           background:var(--panel-2);
+                           border:1px solid var(--border);
+                           color:var(--text-2);
+                           cursor:pointer;
+                           font-size:14px"><span data-theme-icon>☾</span></button>
+        </div>
+        <!-- body -->
+        <div style="flex:1;
+                    padding:26px 30px;
+                    max-width:1040px;
+                    width:100%;
+                    margin:0 auto">
+            <h1 style="margin:0 0 5px;
+                       font-size:24px;
+                       font-weight:600;
+                       letter-spacing:-.02em">Upload Flow Cytometry Data</h1>
+            <p style="margin:0 0 22px;font-size:13px;color:var(--text-2)">Attach the .fcs file for this run along with the run volume and culture OD.</p>
+            <style>
+      .htmx-indicator { display:none }
+      .htmx-request .htmx-indicator, .htmx-request.htmx-indicator { display:inline-flex }
+      .spinner { width:15px;height:15px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite }
+      @keyframes spin { to { transform:rotate(360deg) } }
+            </style>
+            {% include "portal/_flow_form.html" %}
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,70 @@
+{% extends "portal/base.html" %}
+{% load static %}
+{% block title %}Import Run · LabPortal{% endblock %}
+{% block content %}
+    <div style="display:flex;flex-direction:column;min-height:100vh">
+        <!-- topbar -->
+        <div style="flex:none;
+                    height:56px;
+                    display:flex;
+                    align-items:center;
+                    justify-content:space-between;
+                    padding:0 22px;
+                    border-bottom:1px solid var(--border);
+                    background:var(--panel)">
+            <div style="display:flex;align-items:center;gap:11px">
+                <div style="width:28px;
+                            height:28px;
+                            border-radius:7px;
+                            background:var(--accent);
+                            display:grid;
+                            place-items:center;
+                            color:#fff;
+                            font-weight:700;
+                            font-size:13px">LP</div>
+                <span style="font-weight:600;font-size:14.5px">LabPortal</span>
+                <span style="color:var(--text-3);margin:0 2px">/</span>
+                <a href="{% url 'portal:runs' %}"
+                   style="color:var(--text-2);
+                          font-size:13.5px">Bioreactor Runs</a>
+                <span style="color:var(--text-3);margin:0 2px">/</span>
+                <span style="color:var(--text-2);font-size:13.5px">Import</span>
+            </div>
+            <button onclick="toggleTheme()"
+                    title="Toggle theme"
+                    class="btn-soft"
+                    style="width:34px;
+                           height:34px;
+                           border-radius:8px;
+                           background:var(--panel-2);
+                           border:1px solid var(--border);
+                           color:var(--text-2);
+                           cursor:pointer;
+                           font-size:14px"><span data-theme-icon>☾</span></button>
+        </div>
+        <!-- body -->
+        <div style="flex:1;
+                    padding:26px 30px;
+                    max-width:1040px;
+                    width:100%;
+                    margin:0 auto">
+            <h1 style="margin:0 0 5px;
+                       font-size:24px;
+                       font-weight:600;
+                       letter-spacing:-.02em">Import New Run</h1>
+            <p style="margin:0 0 22px;font-size:13px;color:var(--text-2)">Choose how you'd like to add the run.</p>
+            <div id="import-body">{% include "portal/_import_choice.html" %}</div>
+            <div style="margin-top:18px">
+                <a href="{% url 'portal:runs' %}"
+                   class="btn-soft"
+                   style="display:inline-block;
+                          padding:10px 18px;
+                          font-size:13.5px;
+                          color:var(--text-2);
+                          background:var(--panel-2);
+                          border:1px solid var(--border);
+                          border-radius:9px">Cancel</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,533 @@
+{% extends "portal/base.html" %}
+{% load static %}
+{% block title %}{{ run.name }} · LabPortal{% endblock %}
+{% block content %}
+    <div style="display:flex;flex-direction:column;min-height:100vh">
+        <!-- topbar -->
+        <div style="flex:none;
+                    height:56px;
+                    display:flex;
+                    align-items:center;
+                    justify-content:space-between;
+                    padding:0 22px;
+                    border-bottom:1px solid var(--border);
+                    background:var(--panel)">
+            <div style="display:flex;align-items:center;gap:9px;font-size:13.5px">
+                <div style="width:28px;
+                            height:28px;
+                            border-radius:7px;
+                            background:var(--accent);
+                            display:grid;
+                            place-items:center;
+                            color:#fff;
+                            font-weight:700;
+                            font-size:13px">LP</div>
+                <a href="{% url 'portal:runs' %}" style="color:var(--text-2)">Runs</a><span style="color:var(--text-3)">/</span><span class="mono" style="color:var(--text)">{{ run.name }}</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px">{% include "portal/_topbar_right.html" %}</div>
+        </div>
+        <div style="flex:1;
+                    padding:24px 28px;
+                    display:grid;
+                    grid-template-columns:1fr 268px;
+                    gap:22px;
+                    max-width:1280px;
+                    width:100%;
+                    margin:0 auto">
+            <!-- main -->
+            <div style="display:flex;flex-direction:column;gap:18px;min-width:0">
+                <div style="display:flex;
+                            align-items:flex-start;
+                            justify-content:space-between;
+                            gap:16px">
+                    <div>
+                        <div style="display:flex;align-items:center;gap:11px;margin-bottom:5px">
+                            <h1 style="margin:0;font-size:23px;font-weight:600;letter-spacing:-.02em">{{ run.name }}</h1>
+                            {% if run.status == 'complete' %}
+                                <span style="display:flex;
+                                             align-items:center;
+                                             gap:5px;
+                                             font-size:10.5px;
+                                             font-weight:600;
+                                             padding:3px 9px;
+                                             border-radius:11px;
+                                             background:rgba(16,185,129,.14);
+                                             color:var(--ok)"><span style="width:6px;height:6px;border-radius:50%;background:var(--ok)"></span>{{ run.status|title }}</span>
+                            {% else %}
+                                <span style="display:flex;
+                                             align-items:center;
+                                             gap:5px;
+                                             font-size:10.5px;
+                                             font-weight:600;
+                                             padding:3px 9px;
+                                             border-radius:11px;
+                                             background:var(--accent-soft);
+                                             color:var(--accent)"><span style="width:6px;
+             height:6px;
+             border-radius:50%;
+             background:var(--accent)"></span>{{ run.status|title }}</span>
+                            {% endif %}
+                        </div>
+                        <div style="display:flex;gap:16px;font-size:12.5px;color:var(--text-2)">
+                            {% if run.end_date is None %}
+                                <span>📅 {{ run.start_date }} - Present</span>
+                            {% else %}
+                                <span>📅 {{ run.start_date }} - {{ run.end_date }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:8px">
+                        {% if perms.portal.change_run %}
+                            <a href="{% url 'portal:upload-flow' run.slug %}"
+                               class="btn-soft"
+                               style="display:flex;
+                                      align-items:center;
+                                      gap:6px;
+                                      padding:8px 13px;
+                                      font-size:12.5px;
+                                      font-weight:500;
+                                      font-family:Geist;
+                                      color:var(--text);
+                                      background:var(--panel-2);
+                                      border:1px solid var(--border);
+                                      border-radius:8px;
+                                      cursor:pointer">⬆ Upload Flow Cytometry data</a>
+                            <a href="{% url 'portal:upload-strain' run.slug %}"
+                               class="btn-soft"
+                               style="display:flex;
+                                      align-items:center;
+                                      gap:6px;
+                                      padding:8px 13px;
+                                      font-size:12.5px;
+                                      font-weight:500;
+                                      font-family:Geist;
+                                      color:var(--text);
+                                      background:var(--panel-2);
+                                      border:1px solid var(--border);
+                                      border-radius:8px;
+                                      cursor:pointer">⬆ Upload Sequencing run</a>
+                            <a href="{% url 'portal:edit' run.slug %}"
+                               class="btn-soft"
+                               style="display:flex;
+                                      align-items:center;
+                                      gap:6px;
+                                      padding:8px 13px;
+                                      font-size:12.5px;
+                                      font-weight:500;
+                                      font-family:Geist;
+                                      color:var(--text);
+                                      background:var(--panel-2);
+                                      border:1px solid var(--border);
+                                      border-radius:8px;
+                                      cursor:pointer">✎ Edit</a>
+                            <form method="post"
+                                  action="{% url 'portal:delete-run' run.slug %}"
+                                  onsubmit="return confirm('Move this run to Trash?')"
+                                  style="margin:0">
+                                {% csrf_token %}
+                                <button type="submit"
+                                        class="btn-danger"
+                                        style="display:flex;
+                                               align-items:center;
+                                               gap:6px;
+                                               padding:8px 13px;
+                                               font-size:12.5px;
+                                               font-weight:500;
+                                               font-family:Geist;
+                                               color:var(--bad);
+                                               background:transparent;
+                                               border:1px solid var(--border);
+                                               border-radius:8px;
+                                               cursor:pointer;
+                                               transition:border-color .15s,background .15s">🗑 Delete</button>
+                            </form>
+                        {% endif %}
+                    </div>
+                </div>
+                <!-- stat tiles -->
+                <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px">
+                    <div style="padding:15px;
+                                background:var(--panel-2);
+                                border:1px solid var(--border);
+                                border-radius:12px">
+                        <div style="font-size:11px;
+                                    color:var(--text-3);
+                                    text-transform:uppercase;
+                                    letter-spacing:.05em">Viability</div>
+                        <div id="stat-viab"
+                             class="mono"
+                             style="font-size:24px;
+                                    font-weight:600;
+                                    margin-top:6px;
+                                    color:var(--accent)">{{ viab_txt }}</div>
+                        <div style="font-size:11px;color:var(--text-2);margin-top:2px">live & dormant</div>
+                    </div>
+                    <div style="padding:15px;
+                                background:var(--panel-2);
+                                border:1px solid var(--border);
+                                border-radius:12px">
+                        <div style="font-size:11px;
+                                    color:var(--text-3);
+                                    text-transform:uppercase;
+                                    letter-spacing:.05em">Final OD</div>
+                        <div class="mono" style="font-size:24px;font-weight:600;margin-top:6px">{{ last_od }}</div>
+                        <div style="font-size:11px;color:var(--text-2);margin-top:2px">600nm</div>
+                    </div>
+                    <div style="padding:15px;
+                                background:var(--panel-2);
+                                border:1px solid var(--border);
+                                border-radius:12px">
+                        <div style="font-size:11px;
+                                    color:var(--text-3);
+                                    text-transform:uppercase;
+                                    letter-spacing:.05em">Final CFU</div>
+                        {% if last_cfu is not None %}
+                            <div class="mono" style="font-size:24px;font-weight:600;margin-top:6px">{{ last_cfu|stringformat:".2e" }}</div>
+                        {% else %}
+                            <div class="mono" style="font-size:24px;font-weight:600;margin-top:6px">{{ last_cfu }}</div>
+                        {% endif %}
+                        <div style="font-size:11px;color:var(--text-2);margin-top:2px">cells/mL @ OD {{ last_od }}</div>
+                    </div>
+                    <div style="padding:15px;
+                                background:var(--panel-2);
+                                border:1px solid var(--border);
+                                border-radius:12px">
+                        <div style="font-size:11px;
+                                    color:var(--text-3);
+                                    text-transform:uppercase;
+                                    letter-spacing:.05em">Live/Dormant (flow)</div>
+                        <div id="stat-flow"
+                             class="mono"
+                             style="font-size:24px;
+                                    font-weight:600;
+                                    margin-top:6px">{{ flow_txt }}</div>
+                        <div style="font-size:11px;color:var(--text-2);margin-top:2px">cells/mL @ OD {{ flow_od }}</div>
+                    </div>
+                </div>
+                <!-- growth full width -->
+                <div style="padding:16px 16px 12px;
+                            background:var(--panel-2);
+                            border:1px solid var(--border);
+                            border-radius:12px">
+                    <div style="display:flex;
+                                justify-content:space-between;
+                                align-items:baseline;
+                                margin-bottom:10px"><span style="font-size:13px;font-weight:600">Growth curve — OD₆₀₀ &amp; CFU</span></div>
+                    {% if chart_data.od or chart_data.cfu_data %}
+                        <div style="height:150px;position:relative">
+                            <canvas id="od"></canvas>
+                        </div>
+                    {% else %}
+                        {% url 'portal:upload-od' run.slug as od_upload_url %}
+                        {% include "portal/_chart_empty.html" with page_url=od_upload_url %}
+                    {% endif %}
+                </div>
+                <!-- 2 col charts -->
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+                    <div style="padding:16px 16px 12px;
+                                background:var(--panel-2);
+                                border:1px solid var(--border);
+                                border-radius:12px">
+                        {% if chart_data.strain_series %}
+                            <div style="display:flex;
+                                        justify-content:space-between;
+                                        align-items:center;
+                                        margin-bottom:10px">
+                                <span style="font-size:13px;font-weight:600">Strain composition</span>
+                                <span id="strain-nav"
+                                      style="display:flex;
+                                             align-items:center;
+                                             gap:6px;
+                                             font-size:12px;
+                                             color:var(--text-2)">
+                                    <span id="strain-prev"
+                                          style="cursor:pointer;
+                                                 user-select:none;
+                                                 padding:0 4px;
+                                                 font-size:15px">‹</span>
+                                    <span id="strain-label"
+                                          class="mono"
+                                          style="min-width:78px;
+                                                 text-align:center;
+                                                 color:var(--text)">Initial</span>
+                                    <span id="strain-next"
+                                          style="cursor:pointer;
+                                                 user-select:none;
+                                                 padding:0 4px;
+                                                 font-size:15px">›</span>
+                                </span>
+                            </div>
+                            <div style="height:150px;position:relative">
+                                <canvas id="strain"></canvas>
+                            </div>
+                        {% else %}
+                            <div style="font-size:13px;font-weight:600;margin-bottom:10px">Strain composition</div>
+                            {% url 'portal:upload-strain' run.slug as strain_upload_url %}
+                            {% include "portal/_chart_empty.html" with page_url=strain_upload_url %}
+                        {% endif %}
+                    </div>
+                    <div style="padding:16px 16px 12px;
+                                background:var(--panel-2);
+                                border:1px solid var(--border);
+                                border-radius:12px">
+                        {% if chart_data.micro_series %}
+                            <div style="display:flex;
+                                        justify-content:space-between;
+                                        align-items:center;
+                                        margin-bottom:10px">
+                                <span style="font-size:13px;font-weight:600">Microscopy staining</span>
+                                <span style="display:flex;align-items:center;gap:10px">
+                                    <span id="micro-n" style="font-size:11px;color:var(--text-3)"></span>
+                                    <span id="micro-nav"
+                                          style="display:flex;
+                                                 align-items:center;
+                                                 gap:6px;
+                                                 font-size:12px;
+                                                 color:var(--text-2)">
+                                        <span id="micro-prev"
+                                              style="cursor:pointer;
+                                                     user-select:none;
+                                                     padding:0 4px;
+                                                     font-size:15px">‹</span>
+                                        <span id="micro-label"
+                                              class="mono"
+                                              style="min-width:78px;
+                                                     text-align:center;
+                                                     color:var(--text)"></span>
+                                        <span id="micro-next"
+                                              style="cursor:pointer;
+                                                     user-select:none;
+                                                     padding:0 4px;
+                                                     font-size:15px">›</span>
+                                    </span>
+                                </span>
+                            </div>
+                            <div style="height:150px;position:relative">
+                                <canvas id="micro"></canvas>
+                            </div>
+                        {% else %}
+                            <div style="display:flex;
+                                        justify-content:space-between;
+                                        align-items:baseline;
+                                        margin-bottom:10px"><span style="font-size:13px;font-weight:600">Microscopy staining</span></div>
+                            {% url 'portal:upload-micro' run.slug as micro_upload_url %}
+                            {% include "portal/_chart_empty.html" with page_url=micro_upload_url %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <!-- sidebar -->
+            <div style="display:flex;flex-direction:column;gap:16px;min-width:0">
+                <div style="padding:16px;
+                            background:var(--panel-2);
+                            border:1px solid var(--border);
+                            border-radius:12px">
+                    <div style="font-size:11px;
+                                color:var(--text-3);
+                                text-transform:uppercase;
+                                letter-spacing:.06em;
+                                margin-bottom:12px">Run details</div>
+                    <div style="display:flex;flex-direction:column;gap:10px;font-size:12.5px">
+                        <div style="display:flex;justify-content:space-between"><span style="color:var(--text-3)">Reactor</span><span class="mono">{{ run.reac }}</span></div>
+                        <div style="display:flex;justify-content:space-between"><span style="color:var(--text-3)">Operator</span><span>{{ run.oper }}</span></div>
+                        <div style="display:flex;justify-content:space-between"><span style="color:var(--text-3)">Media</span><span>{{ run.media }}</span></div>
+                        <div style="display:flex;justify-content:space-between"><span style="color:var(--text-3)">Mode</span><span>{{ run.mode }}</span></div>
+                        <div style="display:flex;justify-content:space-between"><span style="color:var(--text-3)">Temp</span><span class="mono">{{ run.temp }} °C</span></div>
+                        <div style="display:flex;justify-content:space-between"><span style="color:var(--text-3)">pH</span><span class="mono">{{ run.ph }}</span></div>
+                        <div style="display:flex;justify-content:space-between"><span style="color:var(--text-3)">Volume</span><span class="mono">{{ run.vol }} L</span></div>
+                    </div>
+                </div>
+                <div style="padding:16px;
+                            background:var(--panel-2);
+                            border:1px solid var(--border);
+                            border-radius:12px">
+                    <div style="font-size:11px;
+                                color:var(--text-3);
+                                text-transform:uppercase;
+                                letter-spacing:.06em;
+                                margin-bottom:12px">Linked views 🚧</div>
+                    <div style="display:flex;flex-direction:column;gap:8px">
+                        <a href="#"
+                           class="link-tile"
+                           style="display:flex;
+                                  align-items:center;
+                                  justify-content:space-between;
+                                  padding:10px 12px;
+                                  background:var(--panel);
+                                  border:1px solid var(--border);
+                                  border-radius:9px;
+                                  font-size:12.5px;
+                                  color:var(--text);
+                                  transition:border-color .15s">🌱 Field trials<span style="color:var(--text-3)">→</span></a>
+                        <a href="#"
+                           class="link-tile"
+                           style="display:flex;
+                                  align-items:center;
+                                  justify-content:space-between;
+                                  padding:10px 12px;
+                                  background:var(--panel);
+                                  border:1px solid var(--border);
+                                  border-radius:9px;
+                                  font-size:12.5px;
+                                  color:var(--text);
+                                  transition:border-color .15s">🧪 Formulations<span style="color:var(--text-3)">→</span></a>
+                        <a href="#"
+                           class="link-tile"
+                           style="display:flex;
+                                  align-items:center;
+                                  justify-content:space-between;
+                                  padding:10px 12px;
+                                  background:var(--panel);
+                                  border:1px solid var(--border);
+                                  border-radius:9px;
+                                  font-size:12.5px;
+                                  color:var(--text);
+                                  transition:border-color .15s">🔬 Assays<span style="color:var(--text-3)">→</span></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{ chart_data|json_script:"chart-data" }}
+{% endblock %}
+{% block scripts %}
+    <script src="{% static 'portal/vendor/chart.umd.min.js' %}"></script><!-- 4.4.1 -->
+    <script src="{% static 'portal/vendor/chartjs-adapter-date-fns.bundle.min.js' %}"></script><!-- 3.0.0 -->
+    <script>
+const DATA = JSON.parse(document.getElementById('chart-data').textContent);
+let charts = [];
+let strainIdx = 0;
+let microIdx = Math.max(0, (DATA.micro_series || []).length - 1);  // default to most recent
+
+function cycleStrain(delta) {
+  const n = (DATA.strain_series || []).length;
+  if (!n) {
+    return;
+  }
+  strainIdx = (strainIdx + delta + n) % n;
+  render();
+}
+
+function cycleMicro(delta) {
+  const n = (DATA.micro_series || []).length;
+  if (!n) {
+    return;
+  }
+  microIdx = (microIdx + delta + n) % n;
+  render();
+}
+
+function setText(id, text) {
+  const el = document.getElementById(id);
+  if (el) {
+    el.textContent = text;
+  }
+}
+
+function setNav(prefix, label, count) {
+  const labelEl = document.getElementById(prefix + '-label');
+  if (labelEl) {
+    labelEl.textContent = label;
+  }
+  const navEl = document.getElementById(prefix + '-nav');
+  if (navEl) {
+    if (count > 1) {
+      navEl.style.visibility = 'visible';
+    } else {
+      navEl.style.visibility = 'hidden';
+    }
+  }
+}
+
+function render(){
+  charts.forEach(c => { try { c.destroy(); } catch(e){} });
+  charts = [];
+  const dark = document.documentElement.dataset.theme === 'dark';
+  const grid = dark ? 'rgba(255,255,255,.06)' : 'rgba(0,0,0,.06)';
+  const tick = dark ? '#a1a1aa' : '#52525b';
+  const accent = '#ea580c';
+  const strainC = ['#ea580c', '#f59e0b', '#0891b2', '#64748b'];
+  const microC = ['#10b981', '#f59e0b', '#64748b', '#ef4444'];
+  const font = { family: 'Geist Mono', size: 10 };
+  const axis = (extra = {}) => Object.assign({
+    grid: { color: grid, drawTicks: false }, border: { display: false },
+    ticks: { color: tick, font }
+  }, extra);
+  const noLegend = { legend: { display: false } };
+  const base = { responsive: true, maintainAspectRatio: false, animation: false };
+  const push = (id, cfg) => { const el = document.getElementById(id); if (el) charts.push(new Chart(el, cfg)); };
+
+  const cfuC = '#0891b2';
+  push('od', { type: 'line',
+    data: { datasets: [
+      { label: 'OD₆₀₀', yAxisID: 'yOD', data: DATA.times.map((t, i) => ({ x: t, y: DATA.od[i] })), borderColor: accent, backgroundColor: 'rgba(234,88,12,.12)', fill: true, tension: .35, pointRadius: 2.5, pointBackgroundColor: accent, borderWidth: 2 },
+      { label: 'CFU', yAxisID: 'yCFU', data: DATA.times.map((t, i) => ({ x: t, y: DATA.cfu[i] })), borderColor: cfuC, backgroundColor: 'transparent', fill: false, spanGaps: true, tension: .35, pointRadius: 2.5, pointBackgroundColor: cfuC, borderWidth: 2 },
+    ] },
+    options: Object.assign({}, base, { plugins: { legend: { display: true, labels: { color: tick, font, boxWidth: 12 } }, tooltip: { callbacks: { label: c => {
+        if (c.dataset.label === 'CFU') {
+          return `CFU - ${Number(c.parsed.y).toExponential(1)}`;
+        }
+        return `${c.dataset.label} - ${c.parsed.y}`;
+      } } } }, scales: {
+      x: axis({ type: 'time', time: { tooltipFormat: 'PP p', displayFormats: { minute: 'MMM d, HH:mm', hour: 'MMM d, HH:mm', day: 'MMM d, HH:mm' } }, ticks: { color: tick, font, autoSkip: true, maxTicksLimit: 6 } }),
+      yOD: axis({ position: 'left', suggestedMin: 0, suggestedMax: 14, title: { display: true, text: 'OD₆₀₀', color: tick, font } }),
+      yCFU: axis({ position: 'right', suggestedMin: 0, grid: { display: false }, ticks: { color: tick, font, callback: v => Number(v).toExponential(0) }, title: { display: true, text: 'CFU', color: tick, font } }),
+    } }) });
+
+  const series = DATA.strain_series || [];
+  const cur = series[strainIdx] || { labels: [], data: [] };
+  setNav('strain', cur.label || 'Initial', series.length);
+  push('strain', { type: 'bar',
+    data: { labels: cur.labels, datasets: [{ data: cur.data, backgroundColor: strainC, borderRadius: 4, barThickness: 16 }] },
+    options: Object.assign({}, base, { indexAxis: 'y', plugins: noLegend, scales: { x: axis({ suggestedMax: 50, ticks: { color: tick, font, callback: v => v + '%' } }), y: axis({ grid: { display: false } }) } }) });
+
+  const microSeries = DATA.micro_series || [];
+  const curMicro = microSeries[microIdx] || { labels: [], data: [], err: [], n: 0 };
+  setNav('micro', curMicro.label || '—', microSeries.length);
+  setText('micro-n', `mean ± SD, n=${curMicro.n}`);
+  if (microSeries.length) {
+    setText('stat-viab', curMicro.viab_txt);
+    setText('stat-flow', curMicro.flow_txt);
+  }
+  const errs = curMicro.err;
+  const errPlugin = { id: 'err', afterDatasetsDraw(chart){
+    const ctx = chart.ctx, y = chart.scales.y, meta = chart.getDatasetMeta(0);
+    ctx.save(); ctx.strokeStyle = tick; ctx.lineWidth = 1.5;
+    meta.data.forEach((bar, i) => {
+      const v = chart.data.datasets[0].data[i], e = errs[i];
+      const top = y.getPixelForValue(v + e), bot = y.getPixelForValue(v - e), x = bar.x;
+      ctx.beginPath();
+      ctx.moveTo(x, top); ctx.lineTo(x, bot);
+      ctx.moveTo(x - 5, top); ctx.lineTo(x + 5, top);
+      ctx.moveTo(x - 5, bot); ctx.lineTo(x + 5, bot);
+      ctx.stroke();
+    });
+    ctx.restore();
+  }};
+  push('micro', { type: 'bar',
+    data: { labels: curMicro.labels, datasets: [{ data: curMicro.data, backgroundColor: microC, borderRadius: 4, barThickness: 34 }] },
+    options: Object.assign({}, base, { plugins: noLegend, scales: { x: axis({ grid: { display: false } }), y: axis({ suggestedMin: 0, suggestedMax: 90, ticks: { color: tick, font, callback: v => v + '%' } }) } }),
+    plugins: [errPlugin] });
+}
+
+const strainPrev = document.getElementById('strain-prev');
+if (strainPrev) {
+  strainPrev.addEventListener('click', () => cycleStrain(-1));
+}
+const strainNext = document.getElementById('strain-next');
+if (strainNext) {
+  strainNext.addEventListener('click', () => cycleStrain(1));
+}
+const microPrev = document.getElementById('micro-prev');
+if (microPrev) {
+  microPrev.addEventListener('click', () => cycleMicro(-1));
+}
+const microNext = document.getElementById('micro-next');
+if (microNext) {
+  microNext.addEventListener('click', () => cycleMicro(1));
+}
+
+if (window.Chart) render(); else window.addEventListener('load', render);
+window.addEventListener('theme-changed', render);
+    </script>
+{% endblock %}

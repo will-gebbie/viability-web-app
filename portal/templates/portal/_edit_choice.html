@@ -1,0 +1,110 @@
+<div style="display:grid;
+            grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+            gap:20px;
+            max-width:1040px">
+    <button type="button"
+            class="card"
+            hx-get="{% url 'portal:edit-run-form' run.slug %}"
+            hx-target="#edit-body"
+            hx-swap="innerHTML"
+            style="text-align:left;
+                   cursor:pointer;
+                   display:flex;
+                   flex-direction:column;
+                   gap:8px;
+                   background:var(--panel);
+                   border:1px solid var(--border);
+                   border-radius:12px;
+                   padding:26px;
+                   box-shadow:var(--shadow);
+                   font-family:Geist;
+                   color:var(--text)">
+        <span style="font-size:28px;line-height:1">✎</span>
+        <span style="font-size:16px;font-weight:600">Run</span>
+        <span style="font-size:12.5px;color:var(--text-2)">Edit run details — IDs, status, dates, reactor conditions, and strain composition.</span>
+    </button>
+    <button type="button"
+            class="card"
+            hx-get="{% url 'portal:edit-micro' run.slug %}"
+            hx-target="#edit-body"
+            hx-swap="innerHTML"
+            style="text-align:left;
+                   cursor:pointer;
+                   display:flex;
+                   flex-direction:column;
+                   gap:8px;
+                   background:var(--panel);
+                   border:1px solid var(--border);
+                   border-radius:12px;
+                   padding:26px;
+                   box-shadow:var(--shadow);
+                   font-family:Geist;
+                   color:var(--text)">
+        <span style="font-size:28px;line-height:1">🔬</span>
+        <span style="font-size:16px;font-weight:600">Microscopy</span>
+        <span style="font-size:12.5px;color:var(--text-2)">Replace a measurement, or upload images to re-run the microscopy counter.</span>
+    </button>
+    <button type="button"
+            class="card"
+            hx-get="{% url 'portal:edit-flow' run.slug %}"
+            hx-target="#edit-body"
+            hx-swap="innerHTML"
+            style="text-align:left;
+                   cursor:pointer;
+                   display:flex;
+                   flex-direction:column;
+                   gap:8px;
+                   background:var(--panel);
+                   border:1px solid var(--border);
+                   border-radius:12px;
+                   padding:26px;
+                   box-shadow:var(--shadow);
+                   font-family:Geist;
+                   color:var(--text)">
+        <span style="font-size:28px;line-height:1">📊</span>
+        <span style="font-size:16px;font-weight:600">Flow Cytometry</span>
+        <span style="font-size:12.5px;color:var(--text-2)">Replace a measurement, or upload an .fcs file to re-run the cell counter.</span>
+    </button>
+    <button type="button"
+            class="card"
+            hx-get="{% url 'portal:edit-od' run.slug %}"
+            hx-target="#edit-body"
+            hx-swap="innerHTML"
+            style="text-align:left;
+                   cursor:pointer;
+                   display:flex;
+                   flex-direction:column;
+                   gap:8px;
+                   background:var(--panel);
+                   border:1px solid var(--border);
+                   border-radius:12px;
+                   padding:26px;
+                   box-shadow:var(--shadow);
+                   font-family:Geist;
+                   color:var(--text)">
+        <span style="font-size:28px;line-height:1">📈</span>
+        <span style="font-size:16px;font-weight:600">OD / CFU</span>
+        <span style="font-size:12.5px;color:var(--text-2)">Edit the growth-curve timepoints — every stored OD and CFU value.</span>
+    </button>
+    <button type="button"
+            class="card"
+            hx-get="{% url 'portal:edit-seq' run.slug %}"
+            hx-target="#edit-body"
+            hx-swap="innerHTML"
+            style="text-align:left;
+                   cursor:pointer;
+                   display:flex;
+                   flex-direction:column;
+                   gap:8px;
+                   background:var(--panel);
+                   border:1px solid var(--border);
+                   border-radius:12px;
+                   padding:26px;
+                   box-shadow:var(--shadow);
+                   font-family:Geist;
+                   color:var(--text)">
+        <span style="font-size:28px;line-height:1">🧬</span>
+        <span style="font-size:16px;font-weight:600">Sequencing</span>
+        <span style="font-size:12.5px;color:var(--text-2)">Replace a sequencing run, or add a new one.</span>
+    </button>
+</div>

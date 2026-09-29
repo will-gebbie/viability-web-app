@@ -1,0 +1,25 @@
+{% load static %}
+<button type="button" class="btn-soft"
+        hx-get="{% url 'portal:od-choice' run.slug %}"
+        hx-target="#od-body" hx-swap="innerHTML"
+        style="align-self:flex-start;margin-bottom:16px;padding:7px 12px;font-size:12.5px;font-family:Geist;color:var(--text-2);background:var(--panel-2);border:1px solid var(--border);border-radius:8px;cursor:pointer">← Choose another method</button>
+<form method="post" action="{% url 'portal:upload-od' run.slug %}" enctype="multipart/form-data"
+      style="display:flex;flex-direction:column;gap:16px;max-width:520px;background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:24px;box-shadow:var(--shadow)">
+  {% csrf_token %}
+  <div>
+    <h2 style="margin:0 0 4px;font-size:15px;font-weight:600">Upload a template</h2>
+    <p style="margin:0;font-size:12.5px;color:var(--text-2)">Fill out the template (Datetime, OD, CFU), then upload it here.</p>
+  </div>
+  <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;background:var(--panel-2);border:1px solid var(--border);border-radius:8px">
+    <span style="font-size:12.5px;color:var(--text-2)">Need the format?</span>
+    <a href="{% static 'portal/od_template.csv' %}" download class="btn-soft"
+       style="padding:8px 14px;font-size:12.5px;color:var(--text);background:var(--panel);border:1px solid var(--border);border-radius:8px;white-space:nowrap">⬇ Template CSV</a>
+  </div>
+  <label style="display:flex;flex-direction:column;gap:6px;font-size:13px;color:var(--text-2)">
+    Data file (CSV)
+    <input type="file" name="csv" accept=".csv" required
+           style="padding:9px 11px;background:var(--panel-2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px">
+  </label>
+  <button type="submit" class="btn-accent"
+          style="padding:10px 18px;font-size:13.5px;font-weight:600;font-family:Geist;color:#fff;background:var(--accent);border:none;border-radius:9px;cursor:pointer">Upload File</button>
+</form>

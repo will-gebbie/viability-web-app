@@ -1,0 +1,65 @@
+{% extends "portal/base.html" %}
+{% block title %}Trash · LabPortal{% endblock %}
+{% block content %}
+    <div style="max-width:900px;margin:0 auto;padding:26px 30px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+            <h1 style="margin:0;font-size:24px;font-weight:600;letter-spacing:-.02em">Trash</h1>
+            <a href="{% url 'portal:runs' %}" style="font-size:13px">← Back to runs</a>
+        </div>
+        {% if not runs %}
+            <p style="color:var(--text-2);font-size:14px">Trash is empty.</p>
+        {% endif %}
+        {% for run in runs %}
+            <div style="display:flex;
+                        align-items:center;
+                        justify-content:space-between;
+                        gap:16px;
+                        padding:14px 16px;
+                        margin-bottom:10px;
+                        background:var(--panel);
+                        border:1px solid var(--border);
+                        border-radius:12px">
+                <div>
+                    <div style="font-weight:600;font-size:14px">{{ run.name|default:run.slug }}</div>
+                    <div style="font-size:12px;color:var(--text-3)">Deleted {{ run.deleted_at }}</div>
+                </div>
+                <div style="display:flex;gap:8px">
+                    {% if perms.portal.change_run %}
+                        <form method="post" action="{% url 'portal:restore-run' run.slug %}" style="margin:0">
+                            {% csrf_token %}
+                            <button type="submit"
+                                    class="btn-soft"
+                                    style="padding:8px 13px;
+                                           font-size:12.5px;
+                                           font-weight:500;
+                                           color:var(--text);
+                                           background:var(--panel-2);
+                                           border:1px solid var(--border);
+                                           border-radius:8px;
+                                           cursor:pointer">↩ Restore</button>
+                        </form>
+                    {% endif %}
+                    {% if perms.portal.delete_run %}
+                        <form method="post"
+                              action="{% url 'portal:hard-delete-run' run.slug %}"
+                              onsubmit="return confirm('Permanently delete this run and all its data? This cannot be undone.')"
+                              style="margin:0">
+                            {% csrf_token %}
+                            <button type="submit"
+                                    class="btn-danger"
+                                    style="padding:8px 13px;
+                                           font-size:12.5px;
+                                           font-weight:500;
+                                           color:var(--bad);
+                                           background:transparent;
+                                           border:1px solid var(--border);
+                                           border-radius:8px;
+                                           cursor:pointer;
+                                           transition:border-color .15s,background .15s">🗑 Delete forever</button>
+                        </form>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

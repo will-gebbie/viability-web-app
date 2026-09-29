@@ -1,0 +1,2 @@
+rca_id,batch_id,name,status,strains,comp,start_date,end_date,oper,reac,media,mode,temp,ph,vol
+31,3,Baseline Media,complete,StrainA|StrainB,52|48,2026-05-02,2026-05-16,J. Smith,R7,Standard,fed-batch,45,7.0,5.0

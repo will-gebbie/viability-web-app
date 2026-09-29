@@ -1,0 +1,126 @@
+<div id="run-grid"
+     style="display:grid;
+            grid-template-columns:repeat(3,1fr);
+            grid-auto-rows:min-content;
+            gap:18px;
+            align-content:start">
+    {% for r in runs %}
+        <a href="{% url 'portal:overview' r.slug %}"
+           class="card"
+           style="display:flex;
+                  flex-direction:column;
+                  gap:14px;
+                  padding:18px;
+                  background:var(--panel-2);
+                  border:1px solid var(--border);
+                  border-radius:14px;
+                  cursor:pointer;
+                  text-decoration:none;
+                  color:var(--text)">
+            <div style="display:flex;
+                        align-items:flex-start;
+                        justify-content:space-between;
+                        gap:10px">
+                <div>
+                    <div style="font-size:15px;
+                                font-weight:600;
+                                letter-spacing:-.01em;
+                                line-height:1.25">{{ r.name }}</div>
+                    <div class="mono"
+                         style="font-size:11.5px;
+                                color:var(--text-3);
+                                margin-top:3px">RCA{{ r.rca_id }}</div>
+                </div>
+                {% if r.status == 'running' %}
+                    {% with bg='rgba(234,88,12,.14)' fg='#ea580c' %}
+                        <span style="flex:none;
+                                     display:flex;
+                                     align-items:center;
+                                     gap:5px;
+                                     font-size:10.5px;
+                                     font-weight:600;
+                                     padding:3px 9px;
+                                     border-radius:11px;
+                                     background:{{ bg }};
+                                     color:{{ fg }}"><span style="width:6px;height:6px;border-radius:50%;background:{{ fg }}"></span>{{ r.status|title }}</span>
+                    {% endwith %}
+                {% else %}
+                    {% with bg='rgba(16,185,129,.14)' fg='#10b981' %}
+                        <span style="flex:none;
+                                     display:flex;
+                                     align-items:center;
+                                     gap:5px;
+                                     font-size:10.5px;
+                                     font-weight:600;
+                                     padding:3px 9px;
+                                     border-radius:11px;
+                                     background:{{ bg }};
+                                     color:{{ fg }}"><span style="width:6px;height:6px;border-radius:50%;background:{{ fg }}"></span>{{ r.status|title }}</span>
+                    {% endwith %}
+                {% endif %}
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:5px">
+                {% for s in r.strains %}
+                    <span class="mono"
+                          style="font-size:10.5px;
+                                 padding:2px 7px;
+                                 border-radius:6px;
+                                 background:var(--panel);
+                                 border:1px solid var(--border);
+                                 color:var(--text-2)">{{ s }}</span>
+                {% endfor %}
+            </div>
+            <!--
+<div style="display:flex; -->
+            <!--             height:7px; -->
+            <!--             border-radius:4px; -->
+            <!--             overflow:hidden; -->
+            <!--             background:var(--panel)">
+ -->
+            <!--     {% for c in r.comp %} -->
+            <!--         <div style="width:{{ c.w }};background:{{ c.color }}"></div> -->
+            <!--     {% endfor %} -->
+        <!-- </div> -->
+        <div style="display:flex;
+                    align-items:center;
+                    justify-content:space-between;
+                    padding-top:12px;
+                    border-top:1px solid var(--border)">
+            {% if r.end_date is not None %}
+                <div style="display:flex;
+                            align-items:center;
+                            gap:6px;
+                            font-size:11.5px;
+                            color:var(--text-2)">📅 {{ r.start_date }} - {{ r.end_date }}</div>
+            {% else %}
+                <div style="display:flex;
+                            align-items:center;
+                            gap:6px;
+                            font-size:11.5px;
+                            color:var(--text-2)">📅 {{ r.start_date }} - Present</div>
+            {% endif %}
+            <div style="display:flex;gap:14px">
+                <div style="text-align:right">
+                    <div style="font-size:9.5px;
+                                color:var(--text-3);
+                                text-transform:uppercase;
+                                letter-spacing:.05em">Last OD</div>
+                    <div class="mono" style="font-size:13px;font-weight:600">{{ r.last_od }}</div>
+                </div>
+                <div style="text-align:right">
+                    <div style="font-size:9.5px;
+                                color:var(--text-3);
+                                text-transform:uppercase;
+                                letter-spacing:.05em">Viab.</div>
+                    <div class="mono"
+                         style="font-size:13px;
+                                font-weight:600;
+                                color:var(--accent)">{{ r.latest_viab }}%</div>
+                </div>
+            </div>
+        </div>
+    </a>
+{% empty %}
+    <p style="color:var(--text-3);font-size:13px">No runs match this filter.</p>
+{% endfor %}
+</div>

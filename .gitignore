@@ -1,0 +1,15 @@
+db.sqlite3
+CLAUDE.md
+.env
+
+# Machine-local: cellpose weights live outside the repo (see CELLPOSE_MODEL in .env)
+microscopy/cellpose_model
+# collectstatic output (STATIC_ROOT)
+staticfiles/
+# run data dropped in the repo
+data/
+
+# Ignore all python bytecode cache directories
+**/__pycache__/
+*.pyc
+*.pyo

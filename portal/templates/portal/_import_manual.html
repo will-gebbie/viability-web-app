@@ -1,0 +1,193 @@
+<button type="button"
+        class="btn-soft"
+        hx-get="{% url 'portal:import-choice' %}"
+        hx-target="#import-body"
+        hx-swap="innerHTML"
+        style="align-self:flex-start;
+               margin-bottom:16px;
+               padding:7px 12px;
+               font-size:12.5px;
+               font-family:Geist;
+               color:var(--text-2);
+               background:var(--panel-2);
+               border:1px solid var(--border);
+               border-radius:8px;
+               cursor:pointer">← Choose another method</button>
+<form hx-post="{% url 'portal:import-run' %}"
+      hx-target="#import-body"
+      hx-swap="innerHTML"
+      style="display:flex;
+             flex-direction:column;
+             gap:16px;
+             max-width:640px;
+             background:var(--panel);
+             border:1px solid var(--border);
+             border-radius:12px;
+             padding:24px;
+             box-shadow:var(--shadow)">
+    {% csrf_token %}
+    <div>
+        <h2 style="margin:0 0 4px;font-size:15px;font-weight:600">Enter manually</h2>
+        <p style="margin:0;font-size:12.5px;color:var(--text-2)">Type the run details into the form.</p>
+    </div>
+    {% if form.non_field_errors %}<div style="padding:11px 14px;font-size:12.5px;color:#b91c1c;background:rgba(185,28,28,0.08);border:1px solid rgba(185,28,28,0.3);border-radius:8px">{{ form.non_field_errors }}</div>{% endif %}
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+        <label style="display:flex;
+                      flex-direction:column;
+                      gap:6px;
+                      font-size:13px;
+                      color:var(--text-2)">
+            RCA ID
+            {{ form.rca_id }}
+            {{ form.rca_id.errors }}
+        </label>
+        <label style="display:flex;
+                      flex-direction:column;
+                      gap:6px;
+                      font-size:13px;
+                      color:var(--text-2)">
+            Batch #
+            {{ form.batch_id }}
+            {{ form.batch_id.errors }}
+        </label>
+    </div>
+    <label style="display:flex;
+                  flex-direction:column;
+                  gap:6px;
+                  font-size:13px;
+                  color:var(--text-2)">
+        Run name
+        {{ form.name }}
+        {{ form.name.errors }}
+    </label>
+    <label style="display:flex;
+                  flex-direction:column;
+                  gap:6px;
+                  font-size:13px;
+                  color:var(--text-2)">
+        Status
+        {{ form.status }}
+        {{ form.status.errors }}
+    </label>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+        <label style="display:flex;
+                      flex-direction:column;
+                      gap:6px;
+                      font-size:13px;
+                      color:var(--text-2)">
+            Start date
+            {{ form.start_date }}
+            {{ form.start_date.errors }}
+        </label>
+        <label style="display:flex;
+                      flex-direction:column;
+                      gap:6px;
+                      font-size:13px;
+                      color:var(--text-2)">
+            End date (leave blank if running)
+            {{ form.end_date }}
+            {{ form.end_date.errors }}
+        </label>
+    </div>
+    <label style="display:flex;
+                  flex-direction:column;
+                  gap:6px;
+                  font-size:13px;
+                  color:var(--text-2)">
+        Operator
+        {{ form.oper }}
+        {{ form.oper.errors }}
+    </label>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+        <label style="display:flex;
+                      flex-direction:column;
+                      gap:6px;
+                      font-size:13px;
+                      color:var(--text-2)">
+            Reactor
+            {{ form.reac }}
+            {{ form.reac.errors }}
+        </label>
+        <label style="min-width:0;
+                      display:flex;
+                      flex-direction:column;
+                      gap:6px;
+                      font-size:13px;
+                      color:var(--text-2)">
+            Volume (L)
+            {{ form.vol }}
+            {{ form.vol.errors }}
+        </label>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+        <label style="display:flex;
+                      flex-direction:column;
+                      gap:6px;
+                      font-size:13px;
+                      color:var(--text-2)">
+            Media
+            {{ form.media }}
+            {{ form.media.errors }}
+        </label>
+        <label style="display:flex;
+                      flex-direction:column;
+                      gap:6px;
+                      font-size:13px;
+                      color:var(--text-2)">
+            Mode
+            {{ form.mode }}
+            {{ form.mode.errors }}
+        </label>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+        <label style="min-width:0;
+                      display:flex;
+                      flex-direction:column;
+                      gap:6px;
+                      font-size:13px;
+                      color:var(--text-2)">
+            Temp (°C)
+            {{ form.temp }}
+            {{ form.temp.errors }}
+        </label>
+        <label style="min-width:0;
+                      display:flex;
+                      flex-direction:column;
+                      gap:6px;
+                      font-size:13px;
+                      color:var(--text-2)">
+            pH
+            {{ form.ph }}
+            {{ form.ph.errors }}
+        </label>
+    </div>
+    <label style="display:flex;
+                  flex-direction:column;
+                  gap:6px;
+                  font-size:13px;
+                  color:var(--text-2)">
+        Strains <span style="color:var(--text-3)">(| separated)</span>
+        {{ form.strains }}
+        {{ form.strains.errors }}
+    </label>
+    <label style="display:flex;
+                  flex-direction:column;
+                  gap:6px;
+                  font-size:13px;
+                  color:var(--text-2)">
+        Initial Composition % <span style="color:var(--text-3)">(| separated, matches strains)</span>
+        {{ form.comp }}
+        {{ form.comp.errors }}
+    </label>
+    <button type="submit"
+            class="btn-accent"
+            style="padding:10px 18px;
+                   font-size:13.5px;
+                   font-weight:600;
+                   font-family:Geist;
+                   color:#fff;
+                   background:var(--accent);
+                   border:none;
+                   border-radius:9px;
+                   cursor:pointer">Create Run</button>
+</form>

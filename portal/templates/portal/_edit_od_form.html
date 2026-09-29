@@ -1,0 +1,52 @@
+<button type="button" class="btn-soft"
+        hx-get="{% url 'portal:edit-choice' run.slug %}"
+        hx-target="#edit-body" hx-swap="innerHTML"
+        style="align-self:flex-start;margin-bottom:16px;padding:7px 12px;font-size:12.5px;font-family:Geist;color:var(--text-2);background:var(--panel-2);border:1px solid var(--border);border-radius:8px;cursor:pointer">← Choose another method</button>
+<form hx-post="{% url 'portal:upload-od-manual' run.slug %}"
+      hx-target="#edit-body" hx-swap="innerHTML"
+      style="display:flex;flex-direction:column;gap:16px;max-width:640px;background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:24px;box-shadow:var(--shadow)">
+  {% csrf_token %}
+  <div>
+    <h2 style="margin:0 0 4px;font-size:15px;font-weight:600">Edit OD / CFU data</h2>
+    <p style="margin:0;font-size:12.5px;color:var(--text-2)">Every timepoint is listed below. Saving replaces the whole series. CFU is optional.</p>
+  </div>
+  {% if error %}<div style="padding:11px 14px;font-size:12.5px;color:#b91c1c;background:rgba(185,28,28,0.08);border:1px solid rgba(185,28,28,0.3);border-radius:8px">{{ error }}</div>{% endif %}
+  <table id="od-rows" style="border-collapse:collapse;font-size:13px">
+    <thead>
+      <tr style="color:var(--text-3);text-align:left">
+        <th style="padding:0 8px 6px 0;font-weight:500">Datetime</th>
+        <th style="padding:0 8px 6px 0;font-weight:500">OD</th>
+        <th style="padding:0 8px 6px 0;font-weight:500">CFU</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for t, od, cfu in rows %}
+      <tr>
+        <td style="padding:0 8px 8px 0"><input type="datetime-local" name="datetime" value="{{ t|default_if_none:'' }}" style="padding:8px 10px;background:var(--panel-2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px"></td>
+        <td style="padding:0 8px 8px 0"><input type="number" step="any" min="0" name="od" value="{{ od|default_if_none:'' }}" placeholder="0.11" style="width:90px;padding:8px 10px;background:var(--panel-2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px"></td>
+        <td style="padding:0 8px 8px 0"><input type="number" step="any" min="0" name="cfu" value="{{ cfu|default_if_none:'' }}" placeholder="1.2e8" style="width:110px;padding:8px 10px;background:var(--panel-2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px"></td>
+        <td style="padding:0 0 8px 0"><button type="button" onclick="this.closest('tr').remove()" title="Remove row" style="background:none;border:none;color:var(--text-3);cursor:pointer;font-size:15px">✕</button></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <button type="button" onclick="addOdRow()" class="btn-soft"
+          style="align-self:flex-start;padding:7px 12px;font-size:12.5px;font-family:Geist;color:var(--text);background:var(--panel-2);border:1px solid var(--border);border-radius:8px;cursor:pointer">+ Add row</button>
+  <button type="submit" class="btn-accent"
+          style="align-self:flex-start;padding:10px 18px;font-size:13.5px;font-weight:600;font-family:Geist;color:#fff;background:var(--accent);border:none;border-radius:9px;cursor:pointer">Save</button>
+</form>
+<template id="od-row-tpl">
+  <tr>
+    <td style="padding:0 8px 8px 0"><input type="datetime-local" name="datetime" style="padding:8px 10px;background:var(--panel-2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px"></td>
+    <td style="padding:0 8px 8px 0"><input type="number" step="any" min="0" name="od" placeholder="0.11" style="width:90px;padding:8px 10px;background:var(--panel-2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px"></td>
+    <td style="padding:0 8px 8px 0"><input type="number" step="any" min="0" name="cfu" placeholder="1.2e8" style="width:110px;padding:8px 10px;background:var(--panel-2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px"></td>
+    <td style="padding:0 0 8px 0"><button type="button" onclick="this.closest('tr').remove()" title="Remove row" style="background:none;border:none;color:var(--text-3);cursor:pointer;font-size:15px">✕</button></td>
+  </tr>
+</template>
+<script>
+function addOdRow(){
+  const tb = document.querySelector('#od-rows tbody');
+  tb.appendChild(document.getElementById('od-row-tpl').content.cloneNode(true));
+}
+</script>
